@@ -20,32 +20,38 @@ async function sendEmail(to, subject, text) {
 
   if (forceEthereal) {
     try {
-      const fs = require('fs');
-      const path = require('path');
-      const dir = path.join(__dirname, '..', '..', 'tmp');
-      try { if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true }); } catch (e) {}
-      const name = `${Date.now()}-${Math.random().toString(16).slice(2)}.eml`;
-      const file = path.join(dir, name);
-      const content = [`To: ${to}`, `Subject: ${subject}`, '', text].join('\n');
-      fs.writeFileSync(file, content, { encoding: 'utf8' });
-      console.log('Email (ethereal - forced) written to', file);
+      const testAccount = await nodemailer.createTestAccount();
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false,
+        auth: { user: testAccount.user, pass: testAccount.pass }
+      });
+      const info = await transporter.sendMail({ from: process.env.SMTP_FROM || 'noreply@example.com', to, subject, text });
+      const preview = nodemailer.getTestMessageUrl(info);
+      console.log('Email (ethereal forced) sent. Preview URL:', preview);
       return true;
     } catch (e) {
-      console.log('Email (ethereal forced) failed to write preview, fallback log:', { to, subject, text, err: e.message || e });
+      console.warn('[email] Ethereal forced failed:', e.message || e);
+      console.log('Email (fallback log):', { to, subject, text });
       return false;
     }
   }
 
   if (host) {
-    const transporter = nodemailer.createTransport({
-      host,
-      port: portEnv || 587,
-      secure: process.env.SMTP_SECURE === 'true' || (portEnv === 465),
-      auth: process.env.SMTP_USER ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } : undefined
-    });
-    await transporter.sendMail({ from: process.env.SMTP_FROM || 'noreply@example.com', to, subject, text });
-    console.log('Email sent via SMTP host', host);
-    return true;
+    try {
+      const transporter = nodemailer.createTransport({
+        host,
+        port: portEnv || 587,
+        secure: process.env.SMTP_SECURE === 'true' || (portEnv === 465),
+        auth: process.env.SMTP_USER ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } : undefined
+      });
+      await transporter.sendMail({ from: process.env.SMTP_FROM || 'noreply@example.com', to, subject, text });
+      console.log('Email sent via SMTP host', host);
+      return true;
+    } catch (e) {
+      console.warn('[email] SMTP send failed:', e.message || e);
+    }
   }
 
   if (useLocalDevSmtp) {
