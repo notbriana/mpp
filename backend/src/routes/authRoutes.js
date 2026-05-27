@@ -17,6 +17,13 @@ const { logAction } = require('../data/logging');
 const { v4: uuidv4 } = require('uuid');
 const speakeasy = require('speakeasy');
 const { createMfaChallenge, getMfaMethods } = require('../services/mfaService');
+const {
+  listCredentials,
+  createRegistrationOptions,
+  verifyRegistration,
+  createAuthenticationOptions,
+  verifyAuthentication
+} = require('../services/webauthnService');
 
 const router = express.Router();
 
@@ -150,12 +157,80 @@ router.post('/mfa/verify', async (req, res) => {
     const ok = speakeasy.totp.verify({ secret: session.mfaSecret, encoding: 'base32', token: String(totp), window: 1 });
     if (!ok) return res.status(400).json({ error: 'invalid_totp' });
   }
+  if (mfaMethods.includes('webauthn')) {
+    const creds = await listCredentials(session.userId);
+    session.mfaTempCode = '__EMAIL_OK__';
+    session.mfaTempExpires = null;
+    await session.save();
+    const next = creds && creds.length > 0 ? 'webauthn_auth' : 'webauthn_register';
+    return res.json({ mfaNext: next });
+  }
   session.mfaPending = false;
   session.mfaTempCode = null;
   session.mfaTempExpires = null;
   await session.save();
   const accessToken = await signAccessToken({ userId: session.userId, sessionId: session.refreshToken });
   await updateSessionActivity(session.id).catch(() => {});
+  return res.json({ accessToken });
+});
+
+router.post('/webauthn/register/options', async (req, res) => {
+  const { refreshToken } = req.body || {};
+  if (!refreshToken) return res.status(400).json({ error: 'missing_refresh_token' });
+  const session = await findSessionByToken(refreshToken);
+  if (!session || !session.mfaPending) return res.status(401).json({ error: 'invalid_session' });
+  if (session.mfaTempCode !== '__EMAIL_OK__') return res.status(400).json({ error: 'email_step_required' });
+  const user = await require('../models').User.findByPk(session.userId);
+  if (!user) return res.status(404).json({ error: 'user_not_found' });
+  const options = await createRegistrationOptions({ user, refreshToken, req });
+  return res.json(options);
+});
+
+router.post('/webauthn/register/verify', async (req, res) => {
+  const { refreshToken, response } = req.body || {};
+  if (!refreshToken) return res.status(400).json({ error: 'missing_refresh_token' });
+  const session = await findSessionByToken(refreshToken);
+  if (!session || !session.mfaPending) return res.status(401).json({ error: 'invalid_session' });
+  if (session.mfaTempCode !== '__EMAIL_OK__') return res.status(400).json({ error: 'email_step_required' });
+  const user = await require('../models').User.findByPk(session.userId);
+  if (!user) return res.status(404).json({ error: 'user_not_found' });
+  const result = await verifyRegistration({ user, refreshToken, body: response, req });
+  if (!result.ok) return res.status(400).json({ error: result.error || 'registration_failed' });
+  session.mfaPending = false;
+  session.mfaTempCode = null;
+  session.mfaTempExpires = null;
+  await session.save();
+  const accessToken = await signAccessToken({ userId: session.userId, sessionId: session.refreshToken });
+  return res.json({ accessToken });
+});
+
+router.post('/webauthn/auth/options', async (req, res) => {
+  const { refreshToken } = req.body || {};
+  if (!refreshToken) return res.status(400).json({ error: 'missing_refresh_token' });
+  const session = await findSessionByToken(refreshToken);
+  if (!session || !session.mfaPending) return res.status(401).json({ error: 'invalid_session' });
+  if (session.mfaTempCode !== '__EMAIL_OK__') return res.status(400).json({ error: 'email_step_required' });
+  const user = await require('../models').User.findByPk(session.userId);
+  if (!user) return res.status(404).json({ error: 'user_not_found' });
+  const options = await createAuthenticationOptions({ user, refreshToken, req });
+  return res.json(options);
+});
+
+router.post('/webauthn/auth/verify', async (req, res) => {
+  const { refreshToken, response } = req.body || {};
+  if (!refreshToken) return res.status(400).json({ error: 'missing_refresh_token' });
+  const session = await findSessionByToken(refreshToken);
+  if (!session || !session.mfaPending) return res.status(401).json({ error: 'invalid_session' });
+  if (session.mfaTempCode !== '__EMAIL_OK__') return res.status(400).json({ error: 'email_step_required' });
+  const user = await require('../models').User.findByPk(session.userId);
+  if (!user) return res.status(404).json({ error: 'user_not_found' });
+  const result = await verifyAuthentication({ user, refreshToken, body: response, req });
+  if (!result.ok) return res.status(400).json({ error: result.error || 'auth_failed' });
+  session.mfaPending = false;
+  session.mfaTempCode = null;
+  session.mfaTempExpires = null;
+  await session.save();
+  const accessToken = await signAccessToken({ userId: session.userId, sessionId: session.refreshToken });
   return res.json({ accessToken });
 });
 

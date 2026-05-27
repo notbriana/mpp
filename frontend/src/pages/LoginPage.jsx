@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/AuthPage.css';
 import { loginUser, verifyMfa, requestPasswordReset } from '../services/authRepository';
+import { beginWebAuthnAuthentication, beginWebAuthnRegistration } from '../services/webauthnClient';
 import { validateLogin } from '../validators/authValidator';
 import { authStore } from '../store/authStore';
 import { GraduationCap } from 'lucide-react';
@@ -19,6 +20,8 @@ export function LoginPage() {
   const [totp, setTotp] = useState('');
   const [mfaMethods, setMfaMethods] = useState([]);
   const [totpSetupUri, setTotpSetupUri] = useState('');
+  const [mfaNext, setMfaNext] = useState('');
+  const [webauthnBusy, setWebauthnBusy] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotSent, setForgotSent] = useState(false);
   const navigate = useNavigate();
@@ -70,12 +73,34 @@ export function LoginPage() {
     if (mfaMethods.includes('totp') && !totp) return setSubmitError('Enter the authenticator code.');
     try {
       const body = await verifyMfa(refreshTokenValue, mfaCode, totp);
+      if (body.mfaNext) {
+        setMfaNext(body.mfaNext);
+        return;
+      }
       // store user + token
       const user = authStore.getUser() || {};
       authStore.setUser({ ...user, accessToken: body.accessToken, refreshToken: refreshTokenValue });
       navigate('/dashboard');
     } catch (err) {
       setSubmitError(err.message || 'MFA verification failed');
+    }
+  };
+
+  const handleWebAuthn = async () => {
+    if (!refreshTokenValue) return setSubmitError('Missing session.');
+    setSubmitError('');
+    setWebauthnBusy(true);
+    try {
+      const body = mfaNext === 'webauthn_register'
+        ? await beginWebAuthnRegistration(refreshTokenValue)
+        : await beginWebAuthnAuthentication(refreshTokenValue);
+      const user = authStore.getUser() || {};
+      authStore.setUser({ ...user, accessToken: body.accessToken, refreshToken: refreshTokenValue });
+      navigate('/dashboard');
+    } catch (e) {
+      setSubmitError(e.message || 'Fingerprint verification failed');
+    } finally {
+      setWebauthnBusy(false);
     }
   };
 
@@ -137,6 +162,11 @@ export function LoginPage() {
               </div>
             )}
             <button className="auth-btn" type="submit">Verify</button>
+            {mfaNext && (
+              <button className="auth-btn alt" type="button" onClick={handleWebAuthn} disabled={webauthnBusy}>
+                {mfaNext === 'webauthn_register' ? 'Register Fingerprint' : 'Verify Fingerprint'}
+              </button>
+            )}
           </form>
         )}
 

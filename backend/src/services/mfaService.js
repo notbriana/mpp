@@ -4,7 +4,7 @@ const { createSession } = require('../data/sessions');
 
 function getMfaMethods() {
   const raw = process.env.MFA_METHODS;
-  const value = raw !== undefined ? raw : (process.env.NODE_ENV === 'test' ? '' : 'email,totp');
+  const value = raw !== undefined ? raw : (process.env.NODE_ENV === 'test' ? '' : 'email,totp,webauthn');
   return String(value).split(',').map((x) => x.trim()).filter(Boolean);
 }
 
