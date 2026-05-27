@@ -14,6 +14,10 @@ async function sendEmail(to, subject, text) {
   const portEnv = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;
   const useLocalDevSmtp = process.env.DEV_USE_LOCAL_SMTP === 'true' || process.env.NODE_ENV === 'development';
 
+  if (!forceEthereal && !host && !useLocalDevSmtp) {
+    console.warn('[email] SMTP not configured. Set SMTP_HOST or FORCE_ETHEREAL=true.');
+  }
+
   if (forceEthereal) {
     try {
       const fs = require('fs');
@@ -74,6 +78,7 @@ async function sendEmail(to, subject, text) {
     console.log('Email (ethereal) sent. Preview URL:', preview);
     return true;
   } catch (e) {
+    console.warn('[email] Ethereal failed:', e.message || e);
     console.log('Email (fallback log):', { to, subject, text });
     return false;
   }

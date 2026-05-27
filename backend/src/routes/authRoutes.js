@@ -16,7 +16,7 @@ const {
 const { logAction } = require('../data/logging');
 const { v4: uuidv4 } = require('uuid');
 const speakeasy = require('speakeasy');
-const { createMfaChallenge, getMfaMethods } = require('../services/mfaService');
+const { createMfaChallenge, getMfaMethods, sendEmail } = require('../services/mfaService');
 const {
   listCredentials,
   createRegistrationOptions,
