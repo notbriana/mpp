@@ -2,9 +2,9 @@
 
 .adp-page {
   min-height: 100vh;
-  background-color: transparent;
-  font-family: var(--sans);
-  color: var(--text);
+  background-color: #F8FDF9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #111827;
 }
 
 .adp-container {
@@ -20,8 +20,8 @@
   justify-content: center;
   flex-direction: column;
   gap: 16px;
-  color: var(--text-muted);
-  font-family: var(--sans);
+  color: #6b7280;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   padding: 16px; 
 }
 
@@ -47,13 +47,11 @@
 }
 
 .adp-card {
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
   padding: 24px 16px; 
   margin-bottom: 16px;
-  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
-  animation: pageRise 0.6s ease both;
 }
 
 .adp-badge-row {
@@ -61,7 +59,7 @@
   gap: 12px;
   flex-wrap: wrap;
   padding-bottom: 24px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #e5e7eb;
   margin-bottom: 24px;
 }
 
@@ -78,8 +76,8 @@
   align-items: center;
   border-radius: 20px;
   gap: 6px;
-  background-color: rgba(15, 23, 42, 0.06);
-  color: var(--text);
+  background-color: #f3f4f6;
+  color: #111827;
 }
 
 .badge-course-dot {
@@ -89,14 +87,13 @@
   flex-shrink: 0;
 }
 
+.badge-priority-High   { background-color: #2d7a4d0a; color: #2D7A4D; border: 1px solid #2D7A4D;   border-radius: 20px; }
+.badge-priority-Medium { background-color: #E8F5ED;    color: #1A3A28; border: 1px solid #C9E3D6;   border-radius: 20px; }
+.badge-priority-Low    { background-color: #D4EDE0;    color: #1A3A28; border: 1px solid #D4EDE0;   border-radius: 20px; }
 
-.badge-priority-High   { background-color: var(--accent-soft); color: var(--accent); border: 1px solid rgba(27, 77, 62, 0.4); border-radius: 20px; }
-.badge-priority-Medium { background-color: rgba(201, 151, 82, 0.18); color: #7a4c16; border: 1px solid rgba(201, 151, 82, 0.35); border-radius: 20px; }
-.badge-priority-Low    { background-color: rgba(15, 23, 42, 0.06); color: var(--text-muted); border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 20px; }
-
-.badge-status-Completed   { background-color: var(--accent); color: #ffffff; border: 1px solid var(--accent); border-radius: 20px; }
-.badge-status-In-Progress { background-color: var(--accent-soft); color: var(--accent); border: 1px solid rgba(27, 77, 62, 0.22); border-radius: 20px; }
-.badge-status-Not-Started { background-color: rgba(15, 23, 42, 0.06); color: var(--text-muted); border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 20px; }
+.badge-status-Completed   { background-color: #2D7A4D;    color: #ffffff; border: 1px solid #2D7A4D;    border-radius: 20px; }
+.badge-status-In-Progress { background-color: #2d7a4d2b;  color: #2D7A4D; border: 1px solid #2d7a4d2b;  border-radius: 20px; }
+.badge-status-Not-Started { background-color: #E8F5ED;    color: #4A6B56; border: 1px solid #E8F5ED;    border-radius: 20px; }
 
 .badge-overdue { background-color: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); border-radius: 20px; }
 .badge-today   { background-color: rgba(34,197,94,0.1);  color: #22c55e; border: 1px solid rgba(34,197,94,0.3);  border-radius: 20px; }
@@ -111,7 +108,7 @@
 .adp-info-label {
   font-size: 0.9375rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: #6b7280;
   margin-bottom: 4px;
   display: flex;
   align-items: center;
@@ -127,11 +124,10 @@
 .adp-desc-wrap { margin-bottom: 24px; }
 
 .adp-desc-box {
-  background-color: var(--surface);
-  color: var(--text);
+  background-color: #ffffff;
+  color: #000000;
   font-weight: 500;
-  border-radius: 18px;
-  border: 1px solid var(--border);
+  border-radius: 8px;
   margin-left: 0; 
   padding: 16px;
   font-size: 0.875rem;
@@ -140,17 +136,17 @@
 }
 
 .adp-footer {
-  border-top: 1px solid var(--border);
+  border-top: 1px solid #e5e7eb;
   padding-top: 24px;
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: #6b7280;
 }
 
 .btn-ghost {
-  background-color: rgba(255, 255, 255, 0.92);
-  color: #0f172a;
-  border: 1px solid rgba(15, 23, 42, 0.22);
-  border-radius: 12px;
+  background-color: transparent;
+  color: #111827;
+  border: none;
+  border-radius: 6px;
   padding: 10px 16px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -162,10 +158,10 @@
 }
 
 .btn-primary {
-  background: linear-gradient(90deg, var(--accent), #2f6d51, var(--accent-2));
+  background-color: #2D7A4D;
   color: #fff;
   border: none;
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 10px 16px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -175,13 +171,13 @@
   gap: 6px;
   font-family: inherit;
 }
-.btn-primary:hover { background: linear-gradient(90deg, #153c31, #1f553f, #b88643); } 
+.btn-primary:hover { background-color: #245f3d; } 
 
 .btn-outline {
-  background-color: rgba(255, 255, 255, 0.92);
-  color: #0f172a;
-  border: 1px solid rgba(15, 23, 42, 0.22);
-  border-radius: 12px;
+  background-color: transparent;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   padding: 10px 16px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -191,7 +187,7 @@
   gap: 6px;
   font-family: inherit;
 }
-.btn-outline:hover { background-color: #ffffff; box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08); }
+.btn-outline:hover { background-color: #f9fafb; }
 
 .btn-destructive {
   background-color: #ef4444;
@@ -222,8 +218,8 @@
 }
 
 .adp-modal {
-  background-color: var(--surface);
-  border-radius: 16px;
+  background-color: #ffffff;
+  border-radius: 8px;
   padding: 24px; 
   max-width: 400px;
   width: 100%;
@@ -236,7 +232,7 @@
 }
 
 .adp-modal-body {
-  color: var(--text-muted);
+  color: #6b7280;
   margin-bottom: 24px;
   font-size: 0.875rem;
 }

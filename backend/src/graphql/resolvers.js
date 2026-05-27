@@ -19,7 +19,6 @@ const {
   validateRegister,
   validatePasswordChange
 } = require('../validators/authValidator');
-const { createMfaChallenge } = require('../services/mfaService');
 
 function errorsToList(errors) {
   return Object.entries(errors).map(([field, message]) => ({ field, message }));
@@ -152,17 +151,6 @@ const resolvers = {
     // create session + tokens for client use
     const { createSession } = require('../data/sessions');
     const { signAccessToken } = require('../utils/jwt');
-    const mfa = await createMfaChallenge(user);
-    if (mfa) {
-      return {
-        user: await safeUser(user),
-        errors: [],
-        mfaPending: true,
-        refreshToken: mfa.session.refreshToken,
-        mfaMethods: mfa.mfaMethods,
-        totpSetupUri: mfa.totpSetupUri
-      };
-    }
     const session = await createSession(user.id);
     const accessToken = await signAccessToken({ userId: user.id, sessionId: session.refreshToken });
     return { user: await safeUser(user), errors: [], accessToken, refreshToken: session.refreshToken };
@@ -197,20 +185,28 @@ const resolvers = {
 
     const { createSession } = require('../data/sessions');
     const { signAccessToken } = require('../utils/jwt');
-    const mfa = await createMfaChallenge(user);
-    if (mfa) {
-      return {
-        user: await safeUser(user),
-        errors: [],
-        mfaPending: true,
-        refreshToken: mfa.session.refreshToken,
-        mfaMethods: mfa.mfaMethods,
-        totpSetupUri: mfa.totpSetupUri
-      };
+    const mfaMethods = (process.env.MFA_METHODS || 'email,totp').split(',').map(x => x.trim()).filter(Boolean);
+    if (mfaMethods.length > 0) {
+      const speakeasy = require('speakeasy');
+      const tempCode = String(Math.floor(100000 + Math.random() * 900000));
+      const tempExpires = new Date(Date.now() + (Number(process.env.MFA_CODE_EXPIRES_MS) || 10 * 60 * 1000));
+      const totpSecret = speakeasy.generateSecret({ length: 20 }).base32;
+      const session = await createSession(user.id, { mfaPending: true, mfaMethod: mfaMethods.join(','), mfaTempCode: tempCode, mfaTempExpires: tempExpires, mfaSecret: totpSecret });
+      // send email via console for GraphQL flow
+      try {
+        const lines = [`Your login code: ${tempCode}`, `Expires: ${tempExpires.toISOString()}`];
+        if (mfaMethods.includes('totp')) {
+          const otpauth = speakeasy.otpauthURL({ secret: totpSecret, label: `${process.env.APP_NAME || 'MPP'}:${user.email}`, algorithm: 'sha1' });
+          lines.push(`TOTP setup URI: ${otpauth}`);
+        }
+        console.log('GraphQL MFA email:', { to: user.email, body: lines.join('\n') });
+      } catch (e) {}
+      return { user: await safeUser(user), errors: [], mfaPending: true, refreshToken: session.refreshToken };
+    } else {
+      const session = await createSession(user.id);
+      const accessToken = await signAccessToken({ userId: user.id, sessionId: session.refreshToken });
+      return { user: await safeUser(user), errors: [], accessToken, refreshToken: session.refreshToken };
     }
-    const session = await createSession(user.id);
-    const accessToken = await signAccessToken({ userId: user.id, sessionId: session.refreshToken });
-    return { user: await safeUser(user), errors: [], accessToken, refreshToken: session.refreshToken };
   },
 
   changePassword: async ({ email, currentPassword, newPassword, confirmPassword }) => {

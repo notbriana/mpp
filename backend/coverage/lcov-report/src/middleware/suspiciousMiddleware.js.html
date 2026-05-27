@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/10</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -84,48 +84,48 @@
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a>
 <a name='L21'></a><a href='#L21'>21</a>
-<a name='L22'></a><a href='#L22'>22</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L22'></a><a href='#L22'>22</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const { record } = require('../utils/suspiciousDetector');
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const { record } = <span class="cstat-no" title="statement not covered" >require('../utils/suspiciousDetector');</span>
 &nbsp;
-function suspiciousMiddleware(req, res, next) {
-  try {
-    const ip = req.ip || <span class="branch-1 cbranch-no" title="branch not covered" >req.connection.remoteAddress </span>|| <span class="branch-2 cbranch-no" title="branch not covered" >req.headers['x-forwarded-for'] </span>|| <span class="branch-3 cbranch-no" title="branch not covered" >'unknown';</span>
-    const sessionId = (req.user &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >req.user.sessionId)</span> ? <span class="branch-0 cbranch-no" title="branch not covered" >`sess:${req.user.sessionId}` </span>: null;
-    const key = sessionId || ip;
+function <span class="fstat-no" title="function not covered" >suspiciousMiddleware(</span>req, res, next) {
+<span class="cstat-no" title="statement not covered" >  try {</span>
+    const ip = <span class="cstat-no" title="statement not covered" >req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'] || 'unknown';</span>
+    const sessionId = <span class="cstat-no" title="statement not covered" >(req.user &amp;&amp; req.user.sessionId) ? `sess:${req.user.sessionId}` : null;</span>
+    const key = <span class="cstat-no" title="statement not covered" >sessionId || ip;</span>
     // record request (do not block here, just monitor)
-    record(key, { path: req.path, method: req.method });
+<span class="cstat-no" title="statement not covered" >    record(key, { path: req.path, method: req.method });</span>
 &nbsp;
     // also monitor on response finish for status-based heuristics in the future
-    res.on('finish', () =&gt; {
+<span class="cstat-no" title="statement not covered" >    res.on('finish', <span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
       // could extend to record failed auth, error rates, etc.
     });
   } catch (e) {
     // swallow
   }
-  return next();
+<span class="cstat-no" title="statement not covered" >  return next();</span>
 }
 &nbsp;
-module.exports = { suspiciousMiddleware };
+<span class="cstat-no" title="statement not covered" >module.exports = { suspiciousMiddleware };</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -133,7 +133,7 @@ module.exports = { suspiciousMiddleware };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-27T09:44:14.623Z
+                at 2026-05-27T17:20:23.742Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

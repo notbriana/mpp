@@ -51,11 +51,6 @@ const REGISTER_MUTATION = `
     register(name: $name, email: $email, password: $password, confirmPassword: $confirmPassword) {
       user { id name email roles }
       errors { field message }
-      accessToken
-      refreshToken
-      mfaPending
-      mfaMethods
-      totpSetupUri
     }
   }
 `;
@@ -65,11 +60,6 @@ const LOGIN_MUTATION = `
     login(email: $email, password: $password) {
       user { id name email roles }
       errors { field message }
-      accessToken
-      refreshToken
-      mfaPending
-      mfaMethods
-      totpSetupUri
     }
   }
 `;
@@ -97,19 +87,8 @@ export async function registerUser(payload) {
     if (result.accessToken) {
       authStore.setUser({ ...result.user, accessToken: result.accessToken, refreshToken: result.refreshToken });
     }
-    if (result.mfaPending && result.user) {
-      authStore.setUser({ ...result.user, refreshToken: result.refreshToken, mfaMethods: result.mfaMethods, totpSetupUri: result.totpSetupUri });
-    }
     // support MFA pending flows: GraphQL may return mfaPending + refreshToken
-    return {
-      user: result.user,
-      errors: toErrorMap(result.errors),
-      formError: '',
-      mfaPending: result.mfaPending,
-      refreshToken: result.refreshToken,
-      mfaMethods: result.mfaMethods,
-      totpSetupUri: result.totpSetupUri
-    };
+    return { user: result.user, errors: toErrorMap(result.errors), formError: '', mfaPending: result.mfaPending, refreshToken: result.refreshToken };
   } catch (err) {
     // offline: create local user
     const user = addLocalUser(payload);
@@ -124,19 +103,7 @@ export async function loginUser(payload) {
     if (result.accessToken) {
       authStore.setUser({ ...result.user, accessToken: result.accessToken, refreshToken: result.refreshToken });
     }
-    if (result.mfaPending && result.user) {
-      authStore.setUser({ ...result.user, refreshToken: result.refreshToken, mfaMethods: result.mfaMethods, totpSetupUri: result.totpSetupUri });
-    }
-    return {
-      user: result.user,
-      errors: toErrorMap(result.errors),
-      formError: '',
-      mfaPending: result.mfaPending,
-      refreshToken: result.refreshToken,
-      accessToken: result.accessToken,
-      mfaMethods: result.mfaMethods,
-      totpSetupUri: result.totpSetupUri
-    };
+    return { user: result.user, errors: toErrorMap(result.errors), formError: '', mfaPending: result.mfaPending, refreshToken: result.refreshToken, accessToken: result.accessToken };
   } catch (err) {
     // network/offline fallback: try local users
     const users = getLocalUsers();

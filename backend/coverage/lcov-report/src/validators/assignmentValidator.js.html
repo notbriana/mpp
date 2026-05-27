@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.68% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>14/19</span>
+                <span class='fraction'>0/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">72.22% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>13/18</span>
+                <span class='fraction'>0/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.68% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/19</span>
+                <span class='fraction'>0/19</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -101,77 +101,77 @@
 <a name='L36'></a><a href='#L36'>36</a>
 <a name='L37'></a><a href='#L37'>37</a>
 <a name='L38'></a><a href='#L38'>38</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">function validateAssignment(form) {
-  const errors = {};
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">function <span class="fstat-no" title="function not covered" >validateAssignment(</span>form) {
+  const errors = <span class="cstat-no" title="statement not covered" >{};</span>
 &nbsp;
-  const title = (form.title || '').trim();
-  if (!title) {
-    errors.title = 'Title is required.';
-  } else <span class="missing-if-branch" title="if path not taken" >I</span>if (title.length &gt; 200) {
+  const title = <span class="cstat-no" title="statement not covered" >(form.title || '').trim();</span>
+<span class="cstat-no" title="statement not covered" >  if (!title) {</span>
+<span class="cstat-no" title="statement not covered" >    errors.title = 'Title is required.';</span>
+  } else <span class="cstat-no" title="statement not covered" >if (title.length &gt; 200) {</span>
 <span class="cstat-no" title="statement not covered" >    errors.title = 'Title must be 200 characters or fewer.';</span>
   }
 &nbsp;
-  if (!form.due_date) {
-    errors.due_date = 'Due date is required.';
+<span class="cstat-no" title="statement not covered" >  if (!form.due_date) {</span>
+<span class="cstat-no" title="statement not covered" >    errors.due_date = 'Due date is required.';</span>
   } else {
-    const date = new Date(form.due_date);
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (isNaN(date.getTime())) {
+    const date = <span class="cstat-no" title="statement not covered" >new Date(form.due_date);</span>
+<span class="cstat-no" title="statement not covered" >    if (isNaN(date.getTime())) {</span>
 <span class="cstat-no" title="statement not covered" >      errors.due_date = 'Please enter a valid date.';</span>
     }
   }
 &nbsp;
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (!['High', 'Medium', 'Low'].includes(form.priority)) {
+<span class="cstat-no" title="statement not covered" >  if (!['High', 'Medium', 'Low'].includes(form.priority)) {</span>
 <span class="cstat-no" title="statement not covered" >    errors.priority = 'Select a valid priority.';</span>
   }
 &nbsp;
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (!['Not Started', 'In Progress', 'Completed'].includes(form.status)) {
+<span class="cstat-no" title="statement not covered" >  if (!['Not Started', 'In Progress', 'Completed'].includes(form.status)) {</span>
 <span class="cstat-no" title="statement not covered" >    errors.status = 'Select a valid status.';</span>
   }
 &nbsp;
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (form.description &amp;&amp; form.description.length &gt; 500) {
+<span class="cstat-no" title="statement not covered" >  if (form.description &amp;&amp; form.description.length &gt; 500) {</span>
 <span class="cstat-no" title="statement not covered" >    errors.description = 'Description must be 500 characters or fewer.';</span>
   }
 &nbsp;
-  return errors;
+<span class="cstat-no" title="statement not covered" >  return errors;</span>
 }
 &nbsp;
-module.exports = {
+<span class="cstat-no" title="statement not covered" >module.exports = {</span>
   validateAssignment
 };
 &nbsp;</pre></td></tr></table></pre>
@@ -181,7 +181,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-27T09:44:14.623Z
+                at 2026-05-27T17:20:23.742Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

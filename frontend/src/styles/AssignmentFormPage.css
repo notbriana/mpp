@@ -2,9 +2,9 @@
 
 .afp-page {
   min-height: 100vh;
-  background-color: transparent;
-  font-family: var(--sans);
-  color: var(--text);
+  background-color: #F8FDF9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #111827;
 }
 
 .afp-container {
@@ -28,12 +28,10 @@
 }
 
 .afp-card {
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
   padding: 24px 16px; 
-  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
-  animation: pageRise 0.6s ease both;
 }
 
 .afp-field {
@@ -44,7 +42,7 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: #6b7280;
   margin-bottom: 8px;
 }
 
@@ -53,21 +51,20 @@
 .afp-textarea {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background-color: rgba(255, 255, 255, 0.92);
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: #f9fafb;
   font-size: 0.875rem;
   outline: none;
   font-family: inherit;
-  color: var(--text);
+  color: #111827;
   transition: border-color 0.15s;
 }
 
 .afp-input:focus,
 .afp-select:focus,
 .afp-textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(27, 77, 62, 0.18);
+  border-color: #22c55e;
 }
 
 .afp-input.error,
@@ -114,10 +111,10 @@
 }
 
 .btn-ghost {
-  background-color: rgba(255, 255, 255, 0.92);
-  color: #0f172a;
-  border: 1px solid rgba(15, 23, 42, 0.22);
-  border-radius: 12px;
+  background-color: transparent;
+  color: #111827;
+  border: none;
+  border-radius: 6px;
   padding: 10px 16px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -129,10 +126,10 @@
 }
 
 .btn-primary {
-  background: linear-gradient(90deg, var(--accent), #2f6d51, var(--accent-2));
+  background-color: #2D7A4D;
   color: #fff;
   border: none;
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 10px 16px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -142,14 +139,14 @@
   gap: 6px;
   font-family: inherit;
 }
-.btn-primary:hover:not(:disabled) { background: linear-gradient(90deg, #153c31, #1f553f, #b88643); } 
+.btn-primary:hover:not(:disabled) { background-color: #245f3d; } 
 .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .btn-outline {
-  background-color: rgba(255, 255, 255, 0.92);
-  color: #0f172a;
-  border: 1px solid rgba(15, 23, 42, 0.22);
-  border-radius: 12px;
+  background-color: transparent;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   padding: 10px 16px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -159,7 +156,7 @@
   gap: 6px;
   font-family: inherit;
 }
-.btn-outline:hover { background-color: #ffffff; box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08); }
+.btn-outline:hover { background-color: #f9fafb; }
 
 .btn-destructive {
   background-color: #ef4444;
@@ -189,8 +186,8 @@
 }
 
 .afp-modal {
-  background-color: var(--surface);
-  border-radius: 16px;
+  background-color: #ffffff;
+  border-radius: 8px;
   padding: 24px;
   max-width: 400px;
   width: 100%;
@@ -203,7 +200,7 @@
 }
 
 .afp-modal p {
-  color: var(--text-muted);
+  color: #6b7280;
   margin-bottom: 24px;
   font-size: 0.875rem;
 }
@@ -220,8 +217,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
-  font-family: var(--sans);
+  color: #6b7280;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   padding: 16px; 
 }
 

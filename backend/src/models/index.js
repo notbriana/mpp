@@ -23,7 +23,6 @@ const Log = require('./log')(sequelize);
 const Observation = require('./observation')(sequelize);
 const Session = require('./session')(sequelize);
 const AssignmentCollaborator = require('./assignmentCollaborator')(sequelize);
-const WebAuthnCredential = require('./webauthnCredential')(sequelize);
 
 User.hasMany(Assignment, { foreignKey: { name: 'userId', allowNull: true }, as: 'assignments', onDelete: 'SET NULL' });
 Assignment.belongsTo(User, { foreignKey: { name: 'userId', allowNull: true }, as: 'user' });
@@ -50,9 +49,6 @@ Role.belongsToMany(User, { through: UserRole, foreignKey: 'roleId', otherKey: 'u
 Role.belongsToMany(Permission, { through: RolePermission, foreignKey: 'roleId', otherKey: 'permissionId', as: 'permissions' });
 Permission.belongsToMany(Role, { through: RolePermission, foreignKey: 'permissionId', otherKey: 'roleId', as: 'roles' });
 
-User.hasMany(WebAuthnCredential, { foreignKey: { name: 'userId', allowNull: false }, as: 'webauthnCredentials', onDelete: 'CASCADE' });
-WebAuthnCredential.belongsTo(User, { foreignKey: { name: 'userId', allowNull: false }, as: 'user' });
-
 module.exports = {
   sequelize,
   User,
@@ -72,6 +68,5 @@ module.exports = {
   Log,
   Observation
   ,
-  Session,
-  WebAuthnCredential
+  Session
 };

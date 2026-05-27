@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/AuthPage.css';
 import { registerUser, verifyMfa } from '../services/authRepository';
-import { beginWebAuthnAuthentication, beginWebAuthnRegistration } from '../services/webauthnClient';
 import { validateRegister } from '../validators/authValidator';
 import { authStore } from '../store/authStore';
 import { GraduationCap } from 'lucide-react';
@@ -24,10 +23,6 @@ export function RegisterPage() {
   const [refreshTokenValue, setRefreshTokenValue] = useState(null);
   const [mfaCode, setMfaCode] = useState('');
   const [totp, setTotp] = useState('');
-  const [mfaMethods, setMfaMethods] = useState([]);
-  const [totpSetupUri, setTotpSetupUri] = useState('');
-  const [mfaNext, setMfaNext] = useState('');
-  const [webauthnBusy, setWebauthnBusy] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -45,7 +40,7 @@ export function RegisterPage() {
     }
 
     try {
-      const { user, errors: validationErrors, formError, mfaPending, refreshToken, mfaMethods, totpSetupUri } = await registerUser(form);
+      const { user, errors: validationErrors, formError, mfaPending, refreshToken } = await registerUser(form);
       setErrors(validationErrors);
 
       if (formError) {
@@ -56,8 +51,6 @@ export function RegisterPage() {
       if (mfaPending) {
         setMfaPending(true);
         setRefreshTokenValue(refreshToken);
-        setMfaMethods(Array.isArray(mfaMethods) ? mfaMethods : []);
-        setTotpSetupUri(totpSetupUri || '');
         return;
       }
 
@@ -73,37 +66,13 @@ export function RegisterPage() {
   const handleVerifyMfa = async (e) => {
     e.preventDefault();
     if (!refreshTokenValue) return setSubmitError('Missing session.');
-    if (mfaMethods.includes('email') && !mfaCode) return setSubmitError('Enter the email code.');
-    if (mfaMethods.includes('totp') && !totp) return setSubmitError('Enter the authenticator code.');
     try {
       const body = await verifyMfa(refreshTokenValue, mfaCode, totp);
-      if (body.mfaNext) {
-        setMfaNext(body.mfaNext);
-        return;
-      }
       const user = authStore.getUser() || {};
       authStore.setUser({ ...user, accessToken: body.accessToken, refreshToken: refreshTokenValue });
       navigate('/dashboard');
     } catch (err) {
       setSubmitError(err.message || 'MFA verification failed');
-    }
-  };
-
-  const handleWebAuthn = async () => {
-    if (!refreshTokenValue) return setSubmitError('Missing session.');
-    setSubmitError('');
-    setWebauthnBusy(true);
-    try {
-      const body = mfaNext === 'webauthn_register'
-        ? await beginWebAuthnRegistration(refreshTokenValue)
-        : await beginWebAuthnAuthentication(refreshTokenValue);
-      const user = authStore.getUser() || {};
-      authStore.setUser({ ...user, accessToken: body.accessToken, refreshToken: refreshTokenValue });
-      navigate('/dashboard');
-    } catch (e) {
-      setSubmitError(e.message || 'Fingerprint verification failed');
-    } finally {
-      setWebauthnBusy(false);
     }
   };
 
@@ -147,31 +116,16 @@ export function RegisterPage() {
 
         {mfaPending && (
           <form className="auth-box" onSubmit={handleVerifyMfa}>
-            <h4>Three-step verification</h4>
-            {mfaMethods.includes('email') && (
-              <div className="input-group">
-                <label>Step 2 — Email code</label>
-                <input name="mfa" value={mfaCode} onChange={(e) => setMfaCode(e.target.value)} placeholder="6-digit code" />
-              </div>
-            )}
-            {mfaMethods.includes('totp') && (
-              <div className="input-group">
-                <label>Step 3 — Authenticator code</label>
-                <input name="totp" value={totp} onChange={(e) => setTotp(e.target.value)} placeholder="TOTP from app" />
-              </div>
-            )}
-            {totpSetupUri && (
-              <div className="input-group">
-                <label>TOTP setup URI (paste in authenticator app)</label>
-                <input value={totpSetupUri} readOnly />
-              </div>
-            )}
+            <h4>Enter verification code</h4>
+            <div className="input-group">
+              <label>One-time code</label>
+              <input name="mfa" value={mfaCode} onChange={(e) => setMfaCode(e.target.value)} />
+            </div>
+            <div className="input-group">
+              <label>TOTP (if set)</label>
+              <input name="totp" value={totp} onChange={(e) => setTotp(e.target.value)} />
+            </div>
             <button className="auth-btn" type="submit">Verify</button>
-            {mfaNext && (
-              <button className="auth-btn alt" type="button" onClick={handleWebAuthn} disabled={webauthnBusy}>
-                {mfaNext === 'webauthn_register' ? 'Register Fingerprint' : 'Verify Fingerprint'}
-              </button>
-            )}
           </form>
         )}
 

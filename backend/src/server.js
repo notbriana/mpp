@@ -21,22 +21,11 @@ const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim()).filter(Boolean)
   : null;
 
-function isAllowedOrigin(origin) {
-  if (!allowedOrigins || allowedOrigins.length === 0) return true;
-  if (!origin) return true;
-  if (allowedOrigins.includes(origin)) return true;
-  if (allowedOrigins.includes('vercel.app')) {
-    try {
-      const host = new URL(origin).hostname || '';
-      if (host === 'vercel.app' || host.endsWith('.vercel.app')) return true;
-    } catch (e) {}
-  }
-  return false;
-}
-
 app.use(cors({
   origin: (origin, callback) => {
-    if (isAllowedOrigin(origin)) return callback(null, true);
+    if (!allowedOrigins || allowedOrigins.length === 0) return callback(null, true);
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
     return callback(new Error('CORS not allowed'), false);
   },
   credentials: true

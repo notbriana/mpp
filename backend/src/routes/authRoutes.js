@@ -16,20 +16,84 @@ const {
 const { logAction } = require('../data/logging');
 const { v4: uuidv4 } = require('uuid');
 const speakeasy = require('speakeasy');
-const { createMfaChallenge, getMfaMethods, sendEmail } = require('../services/mfaService');
-const {
-  listCredentials,
-  createRegistrationOptions,
-  verifyRegistration,
-  createAuthenticationOptions,
-  verifyAuthentication
-} = require('../services/webauthnService');
+const nodemailer = require('nodemailer');
 
 const router = express.Router();
 
 function safeUser(user) {
   if (!user) return null;
   return { id: user.id, name: user.name, email: user.email };
+}
+
+async function sendEmail(to, subject, text) {
+  const forceEthereal = process.env.FORCE_ETHEREAL === 'true';
+  const host = process.env.SMTP_HOST;
+  const portEnv = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;
+  const useLocalDevSmtp = process.env.DEV_USE_LOCAL_SMTP === 'true' || process.env.NODE_ENV === 'development';
+
+    if (forceEthereal) {
+      try {
+        const fs = require('fs');
+        const path = require('path');
+        const dir = path.join(__dirname, '..', '..', 'tmp');
+        try { if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true }); } catch (e) {}
+        const name = `${Date.now()}-${Math.random().toString(16).slice(2)}.eml`;
+        const file = path.join(dir, name);
+        const content = [`To: ${to}`, `Subject: ${subject}`, '', text].join('\n');
+        fs.writeFileSync(file, content, { encoding: 'utf8' });
+        console.log('Email (ethereal - forced) written to', file);
+        return true;
+      } catch (e) {
+        console.log('Email (ethereal forced) failed to write preview, fallback log:', { to, subject, text, err: e.message || e });
+        return false;
+      }
+    }
+
+  if (host) {
+    const transporter = nodemailer.createTransport({
+      host,
+      port: portEnv || 587,
+      secure: process.env.SMTP_SECURE === 'true' || (portEnv === 465),
+      auth: process.env.SMTP_USER ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } : undefined
+    });
+    await transporter.sendMail({ from: process.env.SMTP_FROM || 'noreply@example.com', to, subject, text });
+    console.log('Email sent via SMTP host', host);
+    return true;
+  }
+
+  if (useLocalDevSmtp) {
+    try {
+      const localPort = portEnv || 465;
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || '127.0.0.1',
+        port: localPort,
+        secure: true,
+        tls: { rejectUnauthorized: false }
+      });
+      const info = await transporter.sendMail({ from: process.env.SMTP_FROM || 'noreply@example.com', to, subject, text });
+      console.log('Email (local SMTPS) accepted:', info && info.messageId);
+      return true;
+    } catch (e) {
+      console.warn('Local SMTPS send failed, falling fallback to Ethereal preview:', e.message || e);
+    }
+  }
+
+  try {
+    const testAccount = await nodemailer.createTestAccount();
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email',
+      port: 587,
+      secure: false,
+      auth: { user: testAccount.user, pass: testAccount.pass }
+    });
+    const info = await transporter.sendMail({ from: process.env.SMTP_FROM || 'noreply@example.com', to, subject, text });
+    const preview = nodemailer.getTestMessageUrl(info);
+    console.log('Email (ethereal) sent. Preview URL:', preview);
+    return true;
+  } catch (e) {
+    console.log('Email (fallback log):', { to, subject, text });
+    return false;
+  }
 }
 
 router.post('/register', async (req, res) => {
@@ -48,17 +112,6 @@ router.post('/register', async (req, res) => {
     email: req.body.email?.trim(),
     password: req.body.password
   });
-
-  const mfa = await createMfaChallenge(user);
-  if (mfa) {
-    return res.status(201).json({
-      user: safeUser(user),
-      mfaPending: true,
-      refreshToken: mfa.session.refreshToken,
-      mfaMethods: mfa.mfaMethods,
-      totpSetupUri: mfa.totpSetupUri
-    });
-  }
 
   const session = await createSession(user.id);
   const accessToken = await signAccessToken({ userId: user.id, sessionId: session.refreshToken });
@@ -99,15 +152,28 @@ router.post('/login', async (req, res) => {
   });
 
 
-  const mfa = await createMfaChallenge(user);
-  if (mfa) {
-    return res.json({
-      user: safeUser(user),
-      mfaPending: true,
-      refreshToken: mfa.session.refreshToken,
-      mfaMethods: mfa.mfaMethods,
-      totpSetupUri: mfa.totpSetupUri
-    });
+  const mfaMethods = (process.env.MFA_METHODS !== undefined
+    ? process.env.MFA_METHODS
+    : (process.env.NODE_ENV === 'test' ? '' : 'email,totp')).split(',').map(x => x.trim()).filter(Boolean);
+
+  if (mfaMethods.length > 0) {
+    const tempCode = String(Math.floor(100000 + Math.random() * 900000));
+    const tempExpires = new Date(Date.now() + (Number(process.env.MFA_CODE_EXPIRES_MS) || 10 * 60 * 1000));
+    const totpSecret = speakeasy.generateSecret({ length: 20 }).base32;
+    const session = await createSession(user.id, { mfaPending: true, mfaMethod: mfaMethods.join(','), mfaTempCode: tempCode, mfaTempExpires: tempExpires, mfaSecret: totpSecret });
+
+    try {
+      const lines = [`Your login code: ${tempCode}`, `Expires: ${tempExpires.toISOString()}`];
+      if (mfaMethods.includes('totp')) {
+        const otpauth = speakeasy.otpauthURL({ secret: totpSecret, label: `${process.env.APP_NAME || 'MPP'}:${user.email}`, algorithm: 'sha1' });
+        lines.push(`TOTP setup URI: ${otpauth}`);
+      }
+      await sendEmail(user.email, 'Your login code', lines.join('\n'));
+    } catch (e) {
+      console.warn('Failed to send MFA email', e.message || e);
+    }
+
+    return res.json({ user: safeUser(user), mfaPending: true, refreshToken: session.refreshToken });
   }
 
   const session = await createSession(user.id);
@@ -145,25 +211,14 @@ router.post('/mfa/verify', async (req, res) => {
   const session = await findSessionByToken(refreshToken);
   if (!session) return res.status(401).json({ error: 'invalid_session' });
   if (!session.mfaPending) return res.status(400).json({ error: 'not_pending' });
-  const mfaMethods = String(session.mfaMethod || '').split(',').map((x) => x.trim()).filter(Boolean);
-  if (mfaMethods.includes('email')) {
-    if (!session.mfaTempCode || !session.mfaTempExpires || new Date(session.mfaTempExpires) < new Date()) {
-      return res.status(400).json({ error: 'code_expired' });
-    }
-    if (String(session.mfaTempCode) !== String(code)) return res.status(400).json({ error: 'invalid_code' });
+  if (!session.mfaTempCode || !session.mfaTempExpires || new Date(session.mfaTempExpires) < new Date()) {
+    return res.status(400).json({ error: 'code_expired' });
   }
-  if (mfaMethods.includes('totp')) {
+  if (String(session.mfaTempCode) !== String(code)) return res.status(400).json({ error: 'invalid_code' });
+  if (String(session.mfaMethod || '').includes('totp')) {
     if (!totp) return res.status(400).json({ error: 'missing_totp' });
     const ok = speakeasy.totp.verify({ secret: session.mfaSecret, encoding: 'base32', token: String(totp), window: 1 });
     if (!ok) return res.status(400).json({ error: 'invalid_totp' });
-  }
-  if (mfaMethods.includes('webauthn')) {
-    const creds = await listCredentials(session.userId);
-    session.mfaTempCode = '__EMAIL_OK__';
-    session.mfaTempExpires = null;
-    await session.save();
-    const next = creds && creds.length > 0 ? 'webauthn_auth' : 'webauthn_register';
-    return res.json({ mfaNext: next });
   }
   session.mfaPending = false;
   session.mfaTempCode = null;
@@ -174,69 +229,8 @@ router.post('/mfa/verify', async (req, res) => {
   return res.json({ accessToken });
 });
 
-router.post('/webauthn/register/options', async (req, res) => {
-  const { refreshToken } = req.body || {};
-  if (!refreshToken) return res.status(400).json({ error: 'missing_refresh_token' });
-  const session = await findSessionByToken(refreshToken);
-  if (!session || !session.mfaPending) return res.status(401).json({ error: 'invalid_session' });
-  if (session.mfaTempCode !== '__EMAIL_OK__') return res.status(400).json({ error: 'email_step_required' });
-  const user = await require('../models').User.findByPk(session.userId);
-  if (!user) return res.status(404).json({ error: 'user_not_found' });
-  const options = await createRegistrationOptions({ user, refreshToken, req });
-  return res.json(options);
-});
-
-router.post('/webauthn/register/verify', async (req, res) => {
-  const { refreshToken, response } = req.body || {};
-  if (!refreshToken) return res.status(400).json({ error: 'missing_refresh_token' });
-  const session = await findSessionByToken(refreshToken);
-  if (!session || !session.mfaPending) return res.status(401).json({ error: 'invalid_session' });
-  if (session.mfaTempCode !== '__EMAIL_OK__') return res.status(400).json({ error: 'email_step_required' });
-  const user = await require('../models').User.findByPk(session.userId);
-  if (!user) return res.status(404).json({ error: 'user_not_found' });
-  const result = await verifyRegistration({ user, refreshToken, body: response, req });
-  if (!result.ok) return res.status(400).json({ error: result.error || 'registration_failed' });
-  session.mfaPending = false;
-  session.mfaTempCode = null;
-  session.mfaTempExpires = null;
-  await session.save();
-  const accessToken = await signAccessToken({ userId: session.userId, sessionId: session.refreshToken });
-  return res.json({ accessToken });
-});
-
-router.post('/webauthn/auth/options', async (req, res) => {
-  const { refreshToken } = req.body || {};
-  if (!refreshToken) return res.status(400).json({ error: 'missing_refresh_token' });
-  const session = await findSessionByToken(refreshToken);
-  if (!session || !session.mfaPending) return res.status(401).json({ error: 'invalid_session' });
-  if (session.mfaTempCode !== '__EMAIL_OK__') return res.status(400).json({ error: 'email_step_required' });
-  const user = await require('../models').User.findByPk(session.userId);
-  if (!user) return res.status(404).json({ error: 'user_not_found' });
-  const options = await createAuthenticationOptions({ user, refreshToken, req });
-  return res.json(options);
-});
-
-router.post('/webauthn/auth/verify', async (req, res) => {
-  const { refreshToken, response } = req.body || {};
-  if (!refreshToken) return res.status(400).json({ error: 'missing_refresh_token' });
-  const session = await findSessionByToken(refreshToken);
-  if (!session || !session.mfaPending) return res.status(401).json({ error: 'invalid_session' });
-  if (session.mfaTempCode !== '__EMAIL_OK__') return res.status(400).json({ error: 'email_step_required' });
-  const user = await require('../models').User.findByPk(session.userId);
-  if (!user) return res.status(404).json({ error: 'user_not_found' });
-  const result = await verifyAuthentication({ user, refreshToken, body: response, req });
-  if (!result.ok) return res.status(400).json({ error: result.error || 'auth_failed' });
-  session.mfaPending = false;
-  session.mfaTempCode = null;
-  session.mfaTempExpires = null;
-  await session.save();
-  const accessToken = await signAccessToken({ userId: session.userId, sessionId: session.refreshToken });
-  return res.json({ accessToken });
-});
-
 router.post('/password/forgot', async (req, res) => {
   const { email } = req.body || {};
-  console.log('[password/forgot] called', { hasEmail: Boolean(email), smtpHost: Boolean(process.env.SMTP_HOST), forceEthereal: process.env.FORCE_ETHEREAL });
   if (!email) return res.status(400).json({ error: 'missing_email' });
   const user = await findUserByEmail(email.trim());
   if (!user) return res.status(200).json({ ok: true }); 

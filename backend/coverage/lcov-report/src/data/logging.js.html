@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/20</span>
+                <span class='fraction'>0/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.25% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/16</span>
+                <span class='fraction'>0/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.66% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/15</span>
+                <span class='fraction'>0/15</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -99,31 +99,31 @@
 <a name='L34'></a><a href='#L34'>34</a>
 <a name='L35'></a><a href='#L35'>35</a>
 <a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L37'></a><a href='#L37'>37</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -134,33 +134,33 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const { Log, User } = require('../models');
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const { Log, User } = <span class="cstat-no" title="statement not covered" >require('../models');</span>
 &nbsp;
-async function resolveGroupId(userId) {
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (!userId) <span class="cstat-no" title="statement not covered" >return 'user';</span>
-  try {
-    const u = await User.findByPk(userId);
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!u) <span class="cstat-no" title="statement not covered" >return 'user';</span>
-    const roles = await u.getRoles().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >[])</span>;
-    return roles.some(<span class="fstat-no" title="function not covered" >r </span>=&gt; <span class="cstat-no" title="statement not covered" >r.name === 'admin')</span> ? <span class="branch-0 cbranch-no" title="branch not covered" >'admin' </span>: 'user';
+async function <span class="fstat-no" title="function not covered" >resolveGroupId(</span>userId) {
+<span class="cstat-no" title="statement not covered" >  if (!userId) <span class="cstat-no" title="statement not covered" >return 'user';</span></span>
+<span class="cstat-no" title="statement not covered" >  try {</span>
+    const u = <span class="cstat-no" title="statement not covered" >await User.findByPk(userId);</span>
+<span class="cstat-no" title="statement not covered" >    if (!u) <span class="cstat-no" title="statement not covered" >return 'user';</span></span>
+    const roles = <span class="cstat-no" title="statement not covered" >await u.getRoles().catch(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >[])</span>;</span>
+<span class="cstat-no" title="statement not covered" >    return roles.some(<span class="fstat-no" title="function not covered" >r </span>=&gt; <span class="cstat-no" title="statement not covered" >r.name === 'admin')</span> ? 'admin' : 'user';</span>
   } catch (e) {
 <span class="cstat-no" title="statement not covered" >    return 'user';</span>
   }
 }
 &nbsp;
-async function logAction({ userId, groupId, action, actionInfo, meta }) {
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (!action) <span class="cstat-no" title="statement not covered" >return null;</span>
-  const gid = groupId || await resolveGroupId(userId);
-  const details = {
-    actionInfo: actionInfo || <span class="branch-1 cbranch-no" title="branch not covered" >action,</span>
+async function <span class="fstat-no" title="function not covered" >logAction(</span>{ userId, groupId, action, actionInfo, meta }) {
+<span class="cstat-no" title="statement not covered" >  if (!action) <span class="cstat-no" title="statement not covered" >return null;</span></span>
+  const gid = <span class="cstat-no" title="statement not covered" >groupId || await resolveGroupId(userId);</span>
+  const details = <span class="cstat-no" title="statement not covered" >{</span>
+    actionInfo: actionInfo || action,
     actorRole: gid,
-    ...(meta || <span class="branch-1 cbranch-no" title="branch not covered" >{})</span>
+    ...(meta || {})
   };
 &nbsp;
-  try {
-    return await Log.create({
-      userId: userId ? Number(userId) : <span class="branch-1 cbranch-no" title="branch not covered" >null,</span>
+<span class="cstat-no" title="statement not covered" >  try {</span>
+<span class="cstat-no" title="statement not covered" >    return await Log.create({</span>
+      userId: userId ? Number(userId) : null,
       groupId: gid,
       action,
       details
@@ -170,7 +170,7 @@ async function logAction({ userId, groupId, action, actionInfo, meta }) {
   }
 }
 &nbsp;
-module.exports = { logAction, resolveGroupId };
+<span class="cstat-no" title="statement not covered" >module.exports = { logAction, resolveGroupId };</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -178,7 +178,7 @@ module.exports = { logAction, resolveGroupId };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-27T09:44:14.623Z
+                at 2026-05-27T17:20:23.742Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
