@@ -1,0 +1,5 @@
+To: admin@example.com
+Subject: Password reset
+
+Reset your password: http://localhost:5173/reset-password?token=37d8e7a5-0d77-4199-83f1-d0ab045be0b1
+Expires: 2026-05-21T09:44:48.674Z

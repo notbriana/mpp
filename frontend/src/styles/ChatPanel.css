@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+.chat-shell {
+  --chat-bg: #f7f4ef;
+  --chat-accent: #0b6e4f;
+  --chat-ink: #1a1b1e;
+  --chat-muted: #6a6f7a;
+  --chat-bubble: #ffffff;
+  --chat-bubble-alt: #0b6e4f;
+  --chat-bubble-alt-ink: #f7fff6;
+  --chat-border: #e3dfd6;
+  --chat-shadow: 0 12px 30px rgba(20, 20, 20, 0.12);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 12px;
+  text-align: left;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(11, 110, 79, 0.12), transparent 38%),
+    radial-gradient(circle at 80% 12%, rgba(224, 130, 50, 0.12), transparent 35%),
+    var(--chat-bg);
+  border: 1px solid var(--chat-border);
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: var(--chat-shadow);
+  min-height: 420px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--chat-ink);
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px 12px 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.chat-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.chat-contact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0b6e4f, #0f8f62);
+  box-shadow: 0 8px 16px rgba(11, 110, 79, 0.2);
+}
+
+.chat-contact-name {
+  font-weight: 600;
+  color: var(--chat-ink);
+}
+
+.chat-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--chat-muted);
+}
+
+.chat-status {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  background: #c9ced6;
+}
+
+.chat-status.online {
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+.chat-meta {
+  font-size: 12px;
+  color: var(--chat-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 8px;
+  overflow: auto;
+  max-height: 360px;
+}
+
+.chat-row {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.chat-row.is-mine {
+  justify-content: flex-end;
+}
+
+.chat-bubble {
+  max-width: 72%;
+  padding: 12px 14px;
+  border-radius: 16px 16px 16px 4px;
+  background: var(--chat-bubble);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.chat-row.is-mine .chat-bubble {
+  background: var(--chat-bubble-alt);
+  color: var(--chat-bubble-alt-ink);
+  border-radius: 16px 16px 4px 16px;
+}
+
+.chat-bubble-meta {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  font-size: 12px;
+  opacity: 0.85;
+  margin-top: 6px;
+}
+
+.chat-text {
+  font-size: 15px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.chat-sender {
+  margin-bottom: 6px;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.chat-row.is-mine .chat-sender {
+  text-align: right;
+}
+
+.chat-input-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  padding: 6px 4px 2px;
+  align-items: center;
+}
+
+.chat-input {
+  border: 1px solid var(--chat-border);
+  border-radius: 999px;
+  padding: 12px 16px;
+  font-size: 15px;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chat-input:focus {
+  border-color: var(--chat-accent);
+  box-shadow: 0 0 0 3px rgba(11, 110, 79, 0.18);
+}
+
+.chat-send {
+  background: var(--chat-accent);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chat-send:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(11, 110, 79, 0.22);
+}
+
+@media (max-width: 900px) {
+  .chat-shell {
+    min-height: 360px;
+  }
+
+  .chat-bubble {
+    max-width: 86%;
+  }
+}

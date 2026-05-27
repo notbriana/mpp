@@ -1,0 +1,5 @@
+To: briana.filimon@gmail.com
+Subject: Password reset
+
+Reset your password: http://localhost:5173/reset-password?token=b9c9e380-75bc-4f76-bcae-e4fcc2a5de78
+Expires: 2026-05-21T09:30:20.911Z
