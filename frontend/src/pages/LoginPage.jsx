@@ -171,7 +171,11 @@ export function LoginPage() {
         )}
 
         <div className="auth-footer">
-          <p>Forgot password? <input placeholder="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} style={{width:220}} /> <button className="btn inline" onClick={handleForgot}>Send reset</button></p>
+          <p>Forgot password?</p>
+          <div className="auth-inline-row">
+            <input className="auth-inline-input" placeholder="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} />
+            <button className="auth-inline-btn" onClick={handleForgot}>Send reset</button>
+          </div>
           {forgotSent && <p className="muted">If an account exists, reset instructions were sent.</p>}
         </div>
 
