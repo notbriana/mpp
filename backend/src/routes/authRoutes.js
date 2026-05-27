@@ -236,6 +236,7 @@ router.post('/webauthn/auth/verify', async (req, res) => {
 
 router.post('/password/forgot', async (req, res) => {
   const { email } = req.body || {};
+  console.log('[password/forgot] called', { hasEmail: Boolean(email), smtpHost: Boolean(process.env.SMTP_HOST), forceEthereal: process.env.FORCE_ETHEREAL });
   if (!email) return res.status(400).json({ error: 'missing_email' });
   const user = await findUserByEmail(email.trim());
   if (!user) return res.status(200).json({ ok: true }); 
