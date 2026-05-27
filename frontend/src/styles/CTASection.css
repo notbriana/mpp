@@ -5,6 +5,18 @@
   border-top: 1px solid var(--border);
   text-align: center;
   padding: 72px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta::after {
+  content: '';
+  position: absolute;
+  inset: -40% 0 auto;
+  height: 120px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 .cta h2 {
@@ -29,8 +41,13 @@
   font-weight: 500;
   cursor: pointer;
   display: inline-block; 
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.16);
 }
 
 .cta .btn-primary:hover {
   background: linear-gradient(90deg, #153c31, #1f553f, #b88643);
+}
+
+.cta .btn-primary:active {
+  transform: scale(0.98);
 }

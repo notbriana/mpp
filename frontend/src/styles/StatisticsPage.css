@@ -1,6 +1,6 @@
 .sp-root {
   min-height: 100vh;
-  background: #F8FDF9;
+  background: transparent;
   padding: 32px 16px;
 }
 
@@ -37,7 +37,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: 14px;
   font-weight: 500;
   padding: 0;
@@ -57,12 +57,12 @@
 .sp-title {
   font-size: 28px;
   font-weight: 700;
-  color: #111827;
+  color: var(--text);
   margin: 0 0 4px;
 }
 
 .sp-subtitle {
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: 14px;
   margin: 0;
 }
@@ -78,9 +78,9 @@
   gap: 6px;
   padding: 9px 18px;
   border-radius: 8px;
-  border: 1.5px solid #e5e7eb;
-  background: #fff;
-  color: #374151;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -89,20 +89,21 @@
 
 
 .sp-toggle-btn--active {
-  background: #2D7A4D;
-  border-color: #2D7A4D;
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
 }
 
 .sp-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
   padding: 24px;
   transition: box-shadow 0.2s;
+  animation: pageRise 0.6s ease both;
 }
 
-.sp-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+.sp-card:hover { box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12); }
 
 .sp-overview-grid {
   display: grid;
@@ -119,6 +120,7 @@
   gap: 8px;
   position: relative;
   overflow: hidden;
+  border-radius: 18px;
 }
 
 .sp-overview-card::after {
@@ -150,14 +152,14 @@
 
 .sp-overview-card__label {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
 .sp-overview-card__num {
   font-size: 36px;
   font-weight: 700;
-  color: #111827;
+  color: var(--text);
   line-height: 1;
 }
 
@@ -182,8 +184,14 @@
 .sp-chart-title {
   font-size: 16px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text);
   margin: 0 0 20px;
+}
+
+.sp-card--glass {
+  background: linear-gradient(140deg, rgba(255,255,255,0.92), rgba(255,255,255,0.8));
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
 }
 
 .sp-chart-title--flex {
@@ -204,10 +212,10 @@
 @media (max-width: 600px)  { .sp-rankings-grid { grid-template-columns: 1fr; } }
 
 .sp-ranking-card {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 16px;
-  background: #fafafa;
+  background: rgba(255, 255, 255, 0.8);
   transition: box-shadow 0.2s, transform 0.2s;
 }
 
@@ -240,7 +248,7 @@
 .sp-ranking-card__name {
   font-size: 14px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text);
   margin-bottom: 4px;
   white-space: nowrap;
   overflow: hidden;
@@ -257,7 +265,7 @@
 .sp-ranking-card__pct {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-muted);
 }
 
 .sp-progress-track {

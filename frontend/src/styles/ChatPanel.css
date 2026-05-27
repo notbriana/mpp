@@ -1,15 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-
 .chat-shell {
-  --chat-bg: #f7f4ef;
-  --chat-accent: #0b6e4f;
-  --chat-ink: #1a1b1e;
-  --chat-muted: #6a6f7a;
-  --chat-bubble: #ffffff;
-  --chat-bubble-alt: #0b6e4f;
-  --chat-bubble-alt-ink: #f7fff6;
-  --chat-border: #e3dfd6;
-  --chat-shadow: 0 12px 30px rgba(20, 20, 20, 0.12);
+  --chat-bg: #f7f5ef;
+  --chat-accent: var(--accent);
+  --chat-ink: var(--text);
+  --chat-muted: var(--text-muted);
+  --chat-bubble: rgba(255, 255, 255, 0.9);
+  --chat-bubble-alt: var(--accent);
+  --chat-bubble-alt-ink: #ffffff;
+  --chat-border: var(--border);
+  --chat-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 12px;
@@ -19,12 +17,13 @@
     radial-gradient(circle at 80% 12%, rgba(224, 130, 50, 0.12), transparent 35%),
     var(--chat-bg);
   border: 1px solid var(--chat-border);
-  border-radius: 20px;
+  border-radius: 22px;
   padding: 16px;
-  box-shadow: var(--chat-shadow);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
   min-height: 420px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--sans);
   color: var(--chat-ink);
+  animation: pageRise 0.6s ease both;
 }
 
 .chat-header {
@@ -37,7 +36,7 @@
 }
 
 .chat-title {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--heading);
   font-weight: 700;
   font-size: 22px;
 }
@@ -56,7 +55,7 @@
   place-items: center;
   font-weight: 700;
   color: #ffffff;
-  background: linear-gradient(135deg, #0b6e4f, #0f8f62);
+  background: linear-gradient(135deg, var(--accent), #2f6d51);
   box-shadow: 0 8px 16px rgba(11, 110, 79, 0.2);
 }
 
@@ -164,14 +163,14 @@
   border-radius: 999px;
   padding: 12px 16px;
   font-size: 15px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.95);
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .chat-input:focus {
   border-color: var(--chat-accent);
-  box-shadow: 0 0 0 3px rgba(11, 110, 79, 0.18);
+  box-shadow: 0 0 0 3px rgba(11, 110, 79, 0.22);
 }
 
 .chat-send {
