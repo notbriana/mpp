@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "node src/server.js",
+    "postinstall": "npm rebuild sqlite3 --build-from-source",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
