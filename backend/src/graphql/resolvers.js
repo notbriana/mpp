@@ -162,7 +162,7 @@ const resolvers = {
       return { user: null, errors: errorsToList(errors) };
     }
 
-    const bcrypt = require('bcrypt');
+    const bcrypt = require('bcryptjs');
     const user = await findUserByEmail(email.trim());
     if (!user || !(await bcrypt.compare(password, user.password))) {
       await logAction({
@@ -215,7 +215,7 @@ const resolvers = {
       return { user: null, errors: errorsToList(errors) };
     }
 
-    const bcrypt = require('bcrypt');
+    const bcrypt = require('bcryptjs');
     const user = await findUserByEmail(email.trim());
     if (!user) {
       return { user: null, errors: [{ field: 'email', message: 'User not found.' }] };

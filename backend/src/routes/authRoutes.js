@@ -4,7 +4,7 @@ const {
   addUser,
   updateUserPassword
 } = require('../data/store');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { signAccessToken, verifyAccessToken } = require('../utils/jwt');
 const { createSession, findSessionByToken } = require('../data/sessions');
 const { updateSessionActivity, invalidateSession } = require('../data/sessions');

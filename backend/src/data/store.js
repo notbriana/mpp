@@ -140,7 +140,7 @@ async function findUserByEmail(email) {
   return await User.findOne({ where: { email } });
 }
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS) || 10;
 
 async function addUser({ name, email, password }) {
