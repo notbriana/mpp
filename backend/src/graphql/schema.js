@@ -83,6 +83,9 @@ const schema = buildSchema(`
     errors: [FieldError!]!
     accessToken: String
     refreshToken: String
+    mfaPending: Boolean
+    mfaMethods: [String!]
+    totpSetupUri: String
   }
 
   type AssignmentPayload {

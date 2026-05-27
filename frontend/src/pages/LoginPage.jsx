@@ -17,6 +17,8 @@ export function LoginPage() {
   const [refreshTokenValue, setRefreshTokenValue] = useState(null);
   const [mfaCode, setMfaCode] = useState('');
   const [totp, setTotp] = useState('');
+  const [mfaMethods, setMfaMethods] = useState([]);
+  const [totpSetupUri, setTotpSetupUri] = useState('');
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotSent, setForgotSent] = useState(false);
   const navigate = useNavigate();
@@ -36,7 +38,7 @@ export function LoginPage() {
     }
 
     try {
-      const { user, errors: validationErrors, formError, mfaPending, refreshToken } = await loginUser(form);
+      const { user, errors: validationErrors, formError, mfaPending, refreshToken, mfaMethods, totpSetupUri } = await loginUser(form);
       setErrors(validationErrors);
 
       if (formError) {
@@ -47,6 +49,8 @@ export function LoginPage() {
       if (mfaPending) {
         setMfaPending(true);
         setRefreshTokenValue(refreshToken);
+        setMfaMethods(Array.isArray(mfaMethods) ? mfaMethods : []);
+        setTotpSetupUri(totpSetupUri || '');
         return;
       }
 
@@ -62,6 +66,8 @@ export function LoginPage() {
   const handleVerifyMfa = async (e) => {
     e.preventDefault();
     if (!refreshTokenValue) return setSubmitError('Missing session.');
+    if (mfaMethods.includes('email') && !mfaCode) return setSubmitError('Enter the email code.');
+    if (mfaMethods.includes('totp') && !totp) return setSubmitError('Enter the authenticator code.');
     try {
       const body = await verifyMfa(refreshTokenValue, mfaCode, totp);
       // store user + token
@@ -111,15 +117,25 @@ export function LoginPage() {
 
         {mfaPending && (
           <form className="auth-box" onSubmit={handleVerifyMfa}>
-            <h4>Enter verification code</h4>
-            <div className="input-group">
-              <label>One-time code</label>
-              <input name="mfa" value={mfaCode} onChange={(e) => setMfaCode(e.target.value)} />
-            </div>
-            <div className="input-group">
-              <label>TOTP (if set)</label>
-              <input name="totp" value={totp} onChange={(e) => setTotp(e.target.value)} />
-            </div>
+            <h4>Three-step verification</h4>
+            {mfaMethods.includes('email') && (
+              <div className="input-group">
+                <label>Step 2 — Email code</label>
+                <input name="mfa" value={mfaCode} onChange={(e) => setMfaCode(e.target.value)} placeholder="6-digit code" />
+              </div>
+            )}
+            {mfaMethods.includes('totp') && (
+              <div className="input-group">
+                <label>Step 3 — Authenticator code</label>
+                <input name="totp" value={totp} onChange={(e) => setTotp(e.target.value)} placeholder="TOTP from app" />
+              </div>
+            )}
+            {totpSetupUri && (
+              <div className="input-group">
+                <label>TOTP setup URI (paste in authenticator app)</label>
+                <input value={totpSetupUri} readOnly />
+              </div>
+            )}
             <button className="auth-btn" type="submit">Verify</button>
           </form>
         )}
